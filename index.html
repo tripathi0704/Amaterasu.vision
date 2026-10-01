@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>NEO-SHINOBI // 3D Rasengan & Chidori</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    
+    <!-- MediaPipe Hands & Camera Utils CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+  </head>
+  <body>
+    <!-- 1. Live Hardware Webcam Feed -->
+    <video id="v_src" autoplay playsinline muted></video>
+
+    <!-- 2. Glowing Chakra Skeleton Canvas -->
+    <canvas id="out"></canvas>
+
+    <!-- 3. Ambient Darkness Layer for Dramatic Contrast -->
+    <div class="darkness"></div>
+
+    <!-- 4. 3D Anime VFX Videos (Rasengan & Chidori Screen Blended) -->
+    <video id="n" class="fx" src="/assets/naruto.mp4" muted autoplay loop playsinline></video>
+    <video id="s" class="fx" src="/assets/sasuke.mp4" muted autoplay loop playsinline></video>
+
+    <!-- 5. Clash Screen Flash -->
+    <div id="clash-flash"></div>
+
+    <!-- 6. Cyberpunk Shinobi HUD Overlay -->
+    <header class="hud-header">
+      <div class="hud-brand">
+        <div class="emblem">🌀⚡</div>
+        <div>
+          <h1 class="hud-title">AMATERASU VISION <span class="tag">SHINOBI 3D</span></h1>
+          <div class="hud-subtitle">3D RASENGAN & CHIDORI // ZERO-DELAY LIVE AUDIO</div>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-badge">
+          <span class="dot live"></span>
+          <span id="fps-counter">60 FPS</span>
+        </div>
+        <div class="stat-badge audio-status" id="audio-badge">
+          <span class="sound-wave">
+            <span></span><span></span><span></span><span></span>
+          </span>
+          <span id="audio-label">AUDIO LIVE</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Jutsu Detection Cards -->
+    <div class="jutsu-hud-grid">
+      <!-- Left Hand Card -->
+      <div class="jutsu-card" id="card-left">
+        <div class="card-header">
+          <span class="card-tag">LEFT HAND</span>
+          <span class="status-pill idle" id="status-left">SCANNING...</span>
+        </div>
+        <div class="jutsu-name" id="name-left">STANDBY</div>
+        <div class="charge-bar-bg">
+          <div class="charge-bar-fill" id="charge-left" style="width: 0%"></div>
+        </div>
+        <div class="gesture-hint">Open Left Palm ➔ 🌀 Rasengan</div>
+      </div>
+
+      <!-- Clash Alert -->
+      <div class="clash-alert" id="clash-alert">
+        <div class="clash-title">💥 JUTSU CLASH ACTIVE 💥</div>
+        <div class="clash-sub">HIGH CHAKRA DISPERSION DETECTED</div>
+      </div>
+
+      <!-- Right Hand Card -->
+      <div class="jutsu-card" id="card-right">
+        <div class="card-header">
+          <span class="card-tag">RIGHT HAND</span>
+          <span class="status-pill idle" id="status-right">SCANNING...</span>
+        </div>
+        <div class="jutsu-name" id="name-right">STANDBY</div>
+        <div class="charge-bar-bg">
+          <div class="charge-bar-fill" id="charge-right" style="width: 0%"></div>
+        </div>
+        <div class="gesture-hint">Open Right Palm ➔ ⚡ Chidori</div>
+      </div>
+    </div>
+
+    <!-- Bottom Controls -->
+    <footer class="hud-footer">
+      <div class="controls-group">
+        <button class="btn-control active" id="btn-audio" title="Toggle Sound">
+          <span class="btn-icon">🔊</span>
+          <span class="btn-text">SOUND ON</span>
+        </button>
+        <button class="btn-control active" id="btn-skeleton" title="Toggle Chakra Skeleton">
+          <span class="btn-icon">👁️</span>
+          <span class="btn-text">CHAKRA AURA</span>
+        </button>
+        <button class="btn-control active" id="btn-mirror" title="Toggle Mirror">
+          <span class="btn-icon">🪞</span>
+          <span class="btn-text">MIRROR</span>
+        </button>
+      </div>
+    </footer>
+
+    <!-- Initial Modal to Start Experience & Unlock Audio -->
+    <div class="modal-overlay" id="start-overlay">
+      <div class="modal-card">
+        <div class="modal-emblem">🌀⚡</div>
+        <h2 class="modal-title">ACTIVATE SHINOBI POWERS</h2>
+        <p class="modal-desc">
+          Click below to start live camera tracking with 3D Rasengan, Chidori, and official zero-delay anime sound effects!
+        </p>
+
+        <div class="modal-guide">
+          <div class="guide-item">
+            <span class="guide-icon">🖐️</span>
+            <div class="guide-text">
+              <strong>Left Hand (Open):</strong> 🌀 3D Rasengan Vortex + Official Audio
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-icon">✋</span>
+            <div class="guide-text">
+              <strong>Right Hand (Open):</strong> ⚡ 3D Chidori Lightning + Official Audio
+            </div>
+          </div>
+          <div class="guide-item">
+            <span class="guide-icon">💥</span>
+            <div class="guide-text">
+              <strong>Both Hands Together:</strong> Jutsu Clash with Screen Flash & Shockwave!
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-activate" id="btn-start">
+          <span>START JUTSU EXPERIENCE</span>
+          <span class="btn-arrow">→</span>
+        </button>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

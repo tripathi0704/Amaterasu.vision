@@ -1,0 +1,559 @@
+/* NEO-SHINOBI CYBERPUNK 3D HUD & VFX STYLES */
+:root {
+  --bg-dark: #000000;
+  --panel-bg: rgba(12, 16, 28, 0.75);
+  --panel-border: rgba(0, 240, 255, 0.3);
+  --chakra-cyan: #00f0ff;
+  --chakra-blue: #0077ff;
+  --chidori-blue: #80c0ff;
+  --font-cyber: 'Orbitron', monospace, sans-serif;
+  --font-main: 'Rajdhani', sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+html, body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--bg-dark);
+  font-family: var(--font-main);
+  color: #ffffff;
+}
+
+/* 1. Camera Video Source and Skeleton Canvas */
+#v_src, #out {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  transform: scaleX(-1);
+  z-index: 1;
+}
+
+#v_src.no-mirror, #out.no-mirror {
+  transform: scaleX(1);
+}
+
+#out {
+  z-index: 3;
+  pointer-events: none;
+}
+
+/* 2. Darkness Multiply Layer for dramatic contrast */
+.darkness {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 8, 16, 0.32);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* 3. 3D VFX Videos (Screen Blending for pure glowing energy) */
+.fx {
+  position: absolute;
+  height: auto;
+  top: 0;
+  left: 0;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  display: none;
+  mix-blend-mode: screen;
+  z-index: 20;
+  will-change: left, top, opacity, width;
+}
+
+#n {
+  width: 1550px;
+}
+
+#s {
+  width: 2350px;
+}
+
+/* 4. Clash Flash Effect */
+#clash-flash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.8) 0%, rgba(0, 240, 255, 0.4) 50%, transparent 100%);
+  z-index: 25;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.08s ease-out;
+}
+
+#clash-flash.active {
+  opacity: 1;
+}
+
+/* 5. Cyberpunk HUD Header */
+.hud-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 18px 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 30;
+  background: linear-gradient(180deg, rgba(5, 7, 14, 0.85) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.hud-brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.emblem {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid var(--chakra-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+}
+
+.hud-title {
+  font-family: var(--font-cyber);
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.hud-title .tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(0, 240, 255, 0.2);
+  color: var(--chakra-cyan);
+  border: 1px solid var(--chakra-cyan);
+  font-weight: 700;
+}
+
+.hud-subtitle {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 1.5px;
+  font-weight: 600;
+}
+
+.hud-stats {
+  display: flex;
+  gap: 12px;
+}
+
+.stat-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--panel-bg);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--panel-border);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-family: var(--font-cyber);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #ffffff;
+}
+
+.dot.live {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00ff66;
+  box-shadow: 0 0 8px #00ff66;
+  animation: blink 1.2s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.sound-wave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  height: 12px;
+}
+
+.sound-wave span {
+  width: 2.5px;
+  height: 100%;
+  background: var(--chakra-cyan);
+  border-radius: 2px;
+  animation: wave 0.8s ease-in-out infinite alternate;
+}
+
+.sound-wave span:nth-child(2) { animation-delay: 0.2s; }
+.sound-wave span:nth-child(3) { animation-delay: 0.4s; }
+.sound-wave span:nth-child(4) { animation-delay: 0.1s; }
+
+@keyframes wave {
+  0% { height: 4px; }
+  100% { height: 14px; }
+}
+
+.audio-status.muted .sound-wave span {
+  animation: none;
+  height: 3px;
+  background: #888;
+}
+
+/* 6. Dynamic Jutsu Cards */
+.jutsu-hud-grid {
+  position: absolute;
+  top: 90px;
+  left: 0;
+  width: 100%;
+  padding: 0 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  z-index: 30;
+  pointer-events: none;
+}
+
+.jutsu-card {
+  width: 250px;
+  background: var(--panel-bg);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  transition: all 0.2s ease;
+}
+
+.jutsu-card.active-left {
+  border-color: var(--chakra-cyan);
+  box-shadow: 0 0 25px rgba(0, 240, 255, 0.45);
+  background: rgba(0, 40, 70, 0.85);
+}
+
+.jutsu-card.active-right {
+  border-color: var(--chidori-blue);
+  box-shadow: 0 0 25px rgba(128, 192, 255, 0.45);
+  background: rgba(18, 30, 80, 0.85);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.card-tag {
+  font-family: var(--font-cyber);
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 1px;
+}
+
+.status-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+}
+
+.status-pill.idle {
+  background: rgba(255, 255, 255, 0.1);
+  color: #bbb;
+}
+
+.status-pill.active {
+  background: rgba(0, 240, 255, 0.25);
+  color: var(--chakra-cyan);
+  border: 1px solid var(--chakra-cyan);
+}
+
+.jutsu-name {
+  font-family: var(--font-cyber);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  color: #ffffff;
+}
+
+.active-left .jutsu-name {
+  color: var(--chakra-cyan);
+  text-shadow: 0 0 12px rgba(0, 240, 255, 0.7);
+}
+
+.active-right .jutsu-name {
+  color: #d8eeff;
+  text-shadow: 0 0 12px rgba(160, 210, 255, 0.8);
+}
+
+.charge-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.charge-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #0077ff, var(--chakra-cyan));
+  box-shadow: 0 0 8px var(--chakra-cyan);
+  transition: width 0.1s linear;
+}
+
+.active-right .charge-bar-fill {
+  background: linear-gradient(90deg, #6699ff, #ffffff);
+  box-shadow: 0 0 8px #ffffff;
+}
+
+.gesture-hint {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Center Clash Alert */
+.clash-alert {
+  background: rgba(255, 70, 0, 0.3);
+  border: 2px solid #ff4400;
+  backdrop-filter: blur(16px);
+  padding: 12px 28px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 0 35px rgba(255, 68, 0, 0.6);
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.clash-alert.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.clash-title {
+  font-family: var(--font-cyber);
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #ffaa00;
+  text-shadow: 0 0 12px #ff4400;
+}
+
+.clash-sub {
+  font-size: 12px;
+  color: #ffffff;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+/* 7. Bottom Controls */
+.hud-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 28px;
+  display: flex;
+  justify-content: center;
+  z-index: 30;
+  background: linear-gradient(0deg, rgba(5, 7, 14, 0.9) 0%, transparent 100%);
+  pointer-events: auto;
+}
+
+.controls-group {
+  display: flex;
+  gap: 12px;
+  background: var(--panel-bg);
+  backdrop-filter: blur(14px);
+  padding: 8px 16px;
+  border-radius: 40px;
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6);
+}
+
+.btn-control {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-family: var(--font-main);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.btn-control:hover {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: var(--chakra-cyan);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 240, 255, 0.35);
+}
+
+.btn-control.active {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: var(--chakra-cyan);
+  color: var(--chakra-cyan);
+}
+
+/* 8. Initial Modal Overlay */
+.modal-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(4, 6, 12, 0.94);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.modal-card {
+  max-width: 520px;
+  width: 90%;
+  background: rgba(14, 18, 32, 0.97);
+  border: 1px solid var(--chakra-cyan);
+  border-radius: 20px;
+  padding: 36px 30px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 240, 255, 0.3);
+  animation: modalEnter 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes modalEnter {
+  0% { transform: scale(0.9) translateY(20px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+.modal-emblem {
+  font-size: 46px;
+  margin-bottom: 12px;
+}
+
+.modal-title {
+  font-family: var(--font-cyber);
+  font-size: 24px;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.modal-desc {
+  font-size: 15px;
+  color: #a0b4d4;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.modal-guide {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  text-align: left;
+}
+
+.guide-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.guide-icon {
+  font-size: 24px;
+  width: 32px;
+}
+
+.guide-text {
+  font-size: 14px;
+  color: #d0dcf0;
+}
+
+.guide-text strong {
+  color: var(--chakra-cyan);
+}
+
+.btn-activate {
+  width: 100%;
+  background: linear-gradient(135deg, #0077ff, #00f0ff);
+  color: #ffffff;
+  border: none;
+  padding: 16px 28px;
+  font-family: var(--font-cyber);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  border-radius: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 8px 30px rgba(0, 240, 255, 0.5);
+  transition: all 0.25s ease;
+}
+
+.btn-activate:hover {
+  transform: scale(1.03);
+  box-shadow: 0 10px 40px rgba(0, 240, 255, 0.8);
+}
+
+.btn-arrow {
+  font-size: 20px;
+  transition: transform 0.2s ease;
+}
+
+.btn-activate:hover .btn-arrow {
+  transform: translateX(4px);
+}
