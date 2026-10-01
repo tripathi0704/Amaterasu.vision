@@ -20,8 +20,14 @@ Real-time interactive hand-tracking experience that brings iconic anime powers t
 - [Node.js](https://nodejs.org/) (v18 or higher recommended)
 - A working webcam
 
-### Option 1: 1-Click Launch (Windows)
-Simply double-click the **`start.bat`** file in the project folder. It will install dependencies if needed, start the local server, and open your browser automatically.
+---
+
+### Option 1: 1-Click Automated Setup (Windows)
+
+1. Double-click **`setup.bat`** (installs dependencies automatically and asks to launch).
+2. Afterwards, you can launch anytime simply by double-clicking **`start.bat`**.
+
+---
 
 ### Option 2: Manual Setup (Windows / macOS / Linux)
 
