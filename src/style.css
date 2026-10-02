@@ -100,6 +100,202 @@ html, body {
   opacity: 1;
 }
 
+#clash-flash.kage-burst {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.95) 0%, rgba(0, 240, 255, 0.6) 40%, rgba(0, 100, 255, 0.2) 70%, transparent 100%);
+  opacity: 1;
+}
+
+/* 4.1 Anime Smoke & Shockwave Canvas */
+#smoke-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 28;
+}
+
+/* 4.2 Seamless Kage Bunshin Clones (Flanking the user on the SAME screen) */
+.clone-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 1;
+  transition: opacity 0.35s ease;
+}
+
+.clone-layer.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.clone-entity {
+  position: absolute;
+  bottom: 0;
+  width: 44vw;
+  height: 100vh;
+  overflow: hidden;
+  pointer-events: none;
+  transition: transform 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.35s ease;
+}
+
+/* Left Clone: Seamlessly blended onto the left of the main room */
+.clone-entity.clone-left {
+  left: -2vw;
+  -webkit-mask-image: radial-gradient(ellipse 65% 85% at 50% 62%, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 80%);
+  mask-image: radial-gradient(ellipse 65% 85% at 50% 62%, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 80%);
+  filter: drop-shadow(0 0 22px rgba(0, 240, 255, 0.7)) drop-shadow(0 0 45px rgba(0, 140, 255, 0.45));
+}
+
+/* Right Clone: Seamlessly blended onto the right of the main room */
+.clone-entity.clone-right {
+  right: -2vw;
+  -webkit-mask-image: radial-gradient(ellipse 65% 85% at 50% 62%, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 80%);
+  mask-image: radial-gradient(ellipse 65% 85% at 50% 62%, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 80%);
+  filter: drop-shadow(0 0 22px rgba(0, 240, 255, 0.7)) drop-shadow(0 0 45px rgba(0, 140, 255, 0.45));
+}
+
+.clone-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+}
+
+.clone-video.no-mirror {
+  transform: scaleX(1);
+}
+
+/* Subtle anime chakra aura overlay */
+.clone-aura {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at center, rgba(0, 240, 255, 0.08) 0%, rgba(0, 120, 255, 0.04) 50%, transparent 75%);
+  mix-blend-mode: screen;
+  animation: chakraAuraPulse 2.5s infinite alternate ease-in-out;
+}
+
+@keyframes chakraAuraPulse {
+  0% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* Burst Entrance: Emerges from behind the center user */
+.clone-entity.clone-left.anim-burst {
+  animation: cloneBurstFromCenterLeft 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.clone-entity.clone-right.anim-burst {
+  animation: cloneBurstFromCenterRight 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes cloneBurstFromCenterLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(45vw) scale(0.65);
+  }
+  65% {
+    opacity: 1;
+    transform: translateX(-3vw) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes cloneBurstFromCenterRight {
+  0% {
+    opacity: 0;
+    transform: translateX(-45vw) scale(0.65);
+  }
+  65% {
+    opacity: 1;
+    transform: translateX(3vw) scale(1.04);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+/* 4.3 Top Kage Bunshin Active Banner */
+.kage-banner {
+  position: absolute;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-25px);
+  background: rgba(6, 14, 32, 0.92);
+  border: 1.5px solid var(--chakra-cyan);
+  backdrop-filter: blur(18px);
+  padding: 8px 22px;
+  border-radius: 35px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 0 35px rgba(0, 240, 255, 0.5);
+  z-index: 35;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.kage-banner.visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.kage-emblem {
+  font-size: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid var(--chakra-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+}
+
+.kage-title {
+  font-family: var(--font-cyber);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.kage-kanji {
+  color: var(--chakra-cyan);
+  font-weight: 900;
+}
+
+/* 4.4 Screen Shake on Jutsu Cast */
+body.jutsu-shaking {
+  animation: jutsuScreenShake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+}
+
+@keyframes jutsuScreenShake {
+  10%, 90% { transform: translate3d(-4px, 1px, 0); }
+  20%, 80% { transform: translate3d(6px, -3px, 0); }
+  30%, 50%, 70% { transform: translate3d(-7px, 3px, 0); }
+  40%, 60% { transform: translate3d(7px, -4px, 0); }
+}
+
 /* 5. Cyberpunk HUD Header */
 .hud-header {
   position: absolute;
@@ -130,7 +326,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 20px;
+  font-size: 18px;
   box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
 }
 
@@ -239,6 +435,73 @@ html, body {
   align-items: flex-start;
   z-index: 30;
   pointer-events: none;
+}
+
+.center-hud-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Kage Seal Card */
+.kage-seal-card {
+  background: var(--panel-bg);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  padding: 10px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.kage-seal-card.active {
+  border-color: var(--chakra-cyan);
+  background: rgba(0, 45, 80, 0.9);
+  box-shadow: 0 0 28px rgba(0, 240, 255, 0.55);
+}
+
+.seal-icon {
+  font-size: 20px;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid var(--chakra-cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--chakra-cyan);
+  font-weight: 900;
+}
+
+.seal-label {
+  font-family: var(--font-cyber);
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 1px;
+}
+
+.seal-name {
+  font-family: var(--font-cyber);
+  font-size: 13px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 1px;
+}
+
+.kage-seal-card.active .seal-name {
+  color: var(--chakra-cyan);
+  text-shadow: 0 0 10px var(--chakra-cyan);
+}
+
+.seal-status {
+  font-size: 11px;
+  color: #a2c6ff;
+  font-weight: 600;
 }
 
 .jutsu-card {
@@ -557,3 +820,22 @@ html, body {
 .btn-activate:hover .btn-arrow {
   transform: translateX(4px);
 }
+
+@media (max-width: 900px) {
+  .clone-entity {
+    width: 48vw;
+  }
+  .kage-banner {
+    top: 70px;
+    padding: 6px 16px;
+  }
+  .jutsu-hud-grid {
+    padding: 0 14px;
+    top: 80px;
+  }
+  .jutsu-card {
+    width: 200px;
+    padding: 10px 14px;
+  }
+}
+

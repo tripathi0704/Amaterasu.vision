@@ -8,9 +8,11 @@ Real-time interactive hand-tracking experience that brings iconic anime powers t
 
 | Gesture | Action | Power Generated |
 | :--- | :--- | :--- |
+| **Cross Hand Seal ➕ (Either Hand)** | Form a cross (+) with both index fingers (one vertical, one horizontal) | **👥 影分身 Kage Bunshin no Jutsu** (3-Way Live Stage with 2 Real-Time Clones + Anime Smoke Poofs & Audio!) |
 | **Left Hand Open** 🖐️ | Open your left palm towards the camera | **🌀 3D Rasengan** (Swirling Chakra Sphere + Audio) |
 | **Right Hand Open** ✋ | Open your right palm towards the camera | **⚡ 3D Chidori** (Electric Lightning Sparks + Audio) |
 | **Both Hands Close** 💥 | Bring both active hands together | **💥 Jutsu Clash** (Collision Shockwave + Screen Flash) |
+| **HUD Button 👥** | Click `KAGE BUNSHIN` in bottom controls | Manually toggle 3-Clone Stage on or off |
 
 ---
 

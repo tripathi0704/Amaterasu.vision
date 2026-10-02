@@ -179,6 +179,104 @@ class ShinobiAudioEngine {
       osc.stop(now + 0.45);
     } catch (_) {}
   }
+
+  // Authentic Anime Kage Bunshin (Shadow Clone) Smoke Poof + Chakra Burst Sound
+  playShadowClone() {
+    if (!this.initialized || !this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    try {
+      // 1. Resonant Sub-Bass Chakra Impact Thump
+      const osc = this.ctx.createOscillator();
+      const oscGain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(160, now);
+      osc.frequency.exponentialRampToValueAtTime(38, now + 0.38);
+
+      oscGain.gain.setValueAtTime(0.85, now);
+      oscGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+
+      osc.connect(oscGain);
+      oscGain.connect(this.masterGain);
+      osc.start(now);
+      osc.stop(now + 0.42);
+
+      // 2. Explosive Resonant Anime Smoke Poof (White noise swept through resonant bandpass)
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.42);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(1900, now);
+      filter.frequency.exponentialRampToValueAtTime(240, now + 0.38);
+      filter.Q.setValueAtTime(3.8, now);
+
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(1.0, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(this.masterGain);
+      noise.start(now);
+      noise.stop(now + 0.42);
+
+      // 3. Anime Chakra Chime Harmonic Shimmer
+      [880, 1174, 1568].forEach((freq, idx) => {
+        const chime = this.ctx.createOscillator();
+        const chimeGain = this.ctx.createGain();
+        chime.type = 'sine';
+        chime.frequency.setValueAtTime(freq, now + 0.02);
+        chimeGain.gain.setValueAtTime(0.18 / (idx + 1), now + 0.02);
+        chimeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        chime.connect(chimeGain);
+        chimeGain.connect(this.masterGain);
+        chime.start(now + 0.02);
+        chime.stop(now + 0.46);
+      });
+    } catch (e) {
+      console.error('Shadow clone audio error:', e);
+    }
+  }
+
+  // Anime Smoke Puff for Clone Dispersal
+  playDispel() {
+    if (!this.initialized || !this.ctx || this.isMuted) return;
+    const now = this.ctx.currentTime;
+
+    try {
+      const bufferSize = Math.floor(this.ctx.sampleRate * 0.28);
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = Math.random() * 2 - 1;
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(1500, now);
+      filter.frequency.exponentialRampToValueAtTime(300, now + 0.25);
+      filter.Q.setValueAtTime(2.6, now);
+
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.65, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.01, now + 0.26);
+
+      noise.connect(filter);
+      filter.connect(noiseGain);
+      noiseGain.connect(this.masterGain);
+      noise.start(now);
+      noise.stop(now + 0.28);
+    } catch (_) {}
+  }
 }
 
 export const shinobiAudio = new ShinobiAudioEngine();

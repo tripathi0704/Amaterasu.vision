@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>NEO-SHINOBI // 3D Rasengan & Chidori</title>
+    <title>NEO-SHINOBI // 3D Rasengan, Chidori & Kage Bunshin</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,29 +16,47 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
   </head>
   <body>
-    <!-- 1. Live Hardware Webcam Feed -->
+    <!-- 1. Live Hardware Webcam Feed (Full-screen Master) -->
     <video id="v_src" autoplay playsinline muted></video>
 
-    <!-- 2. Glowing Chakra Skeleton Canvas -->
+    <!-- 2. Seamless Clones Flanking the User on the SAME Screen -->
+    <div id="clone-layer" class="clone-layer hidden">
+      <!-- Left Clone Entity -->
+      <div class="clone-entity clone-left" id="entity-clone-left">
+        <video id="v_clone_left" class="clone-video" autoplay playsinline muted></video>
+        <div class="clone-aura"></div>
+      </div>
+
+      <!-- Right Clone Entity -->
+      <div class="clone-entity clone-right" id="entity-clone-right">
+        <video id="v_clone_right" class="clone-video" autoplay playsinline muted></video>
+        <div class="clone-aura"></div>
+      </div>
+    </div>
+
+    <!-- 3. Anime Smoke Puff & Chakra Burst Canvas -->
+    <canvas id="smoke-canvas"></canvas>
+
+    <!-- 4. Glowing Chakra Skeleton Canvas -->
     <canvas id="out"></canvas>
 
-    <!-- 3. Ambient Darkness Layer for Dramatic Contrast -->
+    <!-- 5. Ambient Darkness Layer for Dramatic Contrast -->
     <div class="darkness"></div>
 
-    <!-- 4. 3D Anime VFX Videos (Rasengan & Chidori Screen Blended) -->
+    <!-- 6. 3D Anime VFX Videos (Rasengan & Chidori Screen Blended) -->
     <video id="n" class="fx" src="/assets/naruto.mp4" muted autoplay loop playsinline></video>
     <video id="s" class="fx" src="/assets/sasuke.mp4" muted autoplay loop playsinline></video>
 
-    <!-- 5. Clash Screen Flash -->
+    <!-- 7. Clash / Kage Flash Overlay -->
     <div id="clash-flash"></div>
 
-    <!-- 6. Cyberpunk Shinobi HUD Overlay -->
+    <!-- 8. Cyberpunk Shinobi HUD Header -->
     <header class="hud-header">
       <div class="hud-brand">
-        <div class="emblem">🌀⚡</div>
+        <div class="emblem">🌀👥⚡</div>
         <div>
           <h1 class="hud-title">AMATERASU VISION <span class="tag">SHINOBI 3D</span></h1>
-          <div class="hud-subtitle">3D RASENGAN & CHIDORI // ZERO-DELAY LIVE AUDIO</div>
+          <div class="hud-subtitle">RASENGAN • CHIDORI • KAGE BUNSHIN // LIVE SHINOBI ENGINE</div>
         </div>
       </div>
 
@@ -56,6 +74,14 @@
       </div>
     </header>
 
+    <!-- Top Kage Bunshin Active Banner -->
+    <div class="kage-banner" id="kage-banner">
+      <div class="kage-emblem">👥</div>
+      <div class="kage-info">
+        <div class="kage-title"><span class="kage-kanji">影分身の術</span> KAGE BUNSHIN NO JUTSU</div>
+      </div>
+    </div>
+
     <!-- Jutsu Detection Cards -->
     <div class="jutsu-hud-grid">
       <!-- Left Hand Card -->
@@ -71,10 +97,23 @@
         <div class="gesture-hint">Open Left Palm ➔ 🌀 Rasengan</div>
       </div>
 
-      <!-- Clash Alert -->
-      <div class="clash-alert" id="clash-alert">
-        <div class="clash-title">💥 JUTSU CLASH ACTIVE 💥</div>
-        <div class="clash-sub">HIGH CHAKRA DISPERSION DETECTED</div>
+      <!-- Center Status / Clash Alert / Kage Seal Hint -->
+      <div class="center-hud-col">
+        <!-- Kage Seal Card -->
+        <div class="kage-seal-card" id="card-clone">
+          <div class="seal-icon">➕</div>
+          <div class="seal-details">
+            <div class="seal-label">SECRET JUTSU SEAL</div>
+            <div class="seal-name" id="seal-name">KAGE BUNSHIN</div>
+            <div class="seal-status" id="seal-status">CROSS FINGERS ➔ 👥 2 CLONES</div>
+          </div>
+        </div>
+
+        <!-- Clash Alert -->
+        <div class="clash-alert" id="clash-alert">
+          <div class="clash-title">💥 JUTSU CLASH ACTIVE 💥</div>
+          <div class="clash-sub">HIGH CHAKRA DISPERSION DETECTED</div>
+        </div>
       </div>
 
       <!-- Right Hand Card -->
@@ -98,6 +137,10 @@
           <span class="btn-icon">🔊</span>
           <span class="btn-text">SOUND ON</span>
         </button>
+        <button class="btn-control" id="btn-clone" title="Toggle Kage Bunshin Clones">
+          <span class="btn-icon">👥</span>
+          <span class="btn-text">KAGE BUNSHIN</span>
+        </button>
         <button class="btn-control active" id="btn-skeleton" title="Toggle Chakra Skeleton">
           <span class="btn-icon">👁️</span>
           <span class="btn-text">CHAKRA AURA</span>
@@ -112,13 +155,19 @@
     <!-- Initial Modal to Start Experience & Unlock Audio -->
     <div class="modal-overlay" id="start-overlay">
       <div class="modal-card">
-        <div class="modal-emblem">🌀⚡</div>
+        <div class="modal-emblem">🌀👥⚡</div>
         <h2 class="modal-title">ACTIVATE SHINOBI POWERS</h2>
         <p class="modal-desc">
-          Click below to start live camera tracking with 3D Rasengan, Chidori, and official zero-delay anime sound effects!
+          Live camera tracking with 3D Rasengan, Chidori, authentic Kage Bunshin 3-Clone Live Stage, anime smoke explosions, and zero-delay sound effects!
         </p>
 
         <div class="modal-guide">
+          <div class="guide-item">
+            <span class="guide-icon">➕</span>
+            <div class="guide-text">
+              <strong>Cross Hand Seal (Either Hand):</strong> 👥 <strong>影分身 Kage Bunshin</strong> (Creates 2 Live Clones next to you with Anime Smoke Puff + Audio!)
+            </div>
+          </div>
           <div class="guide-item">
             <span class="guide-icon">🖐️</span>
             <div class="guide-text">
